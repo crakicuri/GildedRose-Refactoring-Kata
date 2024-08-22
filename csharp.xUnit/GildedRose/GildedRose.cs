@@ -13,6 +13,63 @@ public class GildedRose
 
     public void UpdateQuality()
     {
+        foreach (Item item in this.Items)
+        {
+            QualityRules(item);
+        }
+    }
+
+    public void QualityRules(Item item)
+    {
+        if (item.Name == "Sulfuras, Hand of Ragnaros")
+            return;
+
+        int SMult = 1;
+        int QMult = 1;
+
+        if (item.Name == "Conjured Mana Cake")
+            QMult = 2;
+
+        if (item.SellIn < 0)
+            QMult *= 2;
+
+        if (item.Name == "Aged Brie")
+            QMult *= -1;
+
+        if (item.Name == "Backstage passes to a TAFKAL80ETC concert") 
+        {
+            if (item.SellIn < 0)
+                QMult *= 0;
+            else
+            {
+                if (item.SellIn <= 5)
+                    QMult *= 3;
+                else if (item.SellIn <= 10)
+                    QMult *= 2;
+            }
+        }
+
+        if (item.Quality == 0 || item.Quality > 50)
+            QMult *= 0;
+
+        ApplyChanges(item, SMult, QMult);
+    }
+
+    public void ApplyChanges(Item item, int SMultiplicator, int QMultiplicator)
+    {
+
+        item.SellIn -= 1 * SMultiplicator;
+        item.Quality -= 1 * QMultiplicator;
+
+        if (item.Quality < 0)
+            item.Quality = 0;
+
+        if (item.Quality > 50)
+            item.Quality = 50;
+    }
+
+    public void temp()
+    {
         for (var i = 0; i < Items.Count; i++)
         {
             if (Items[i].Name != "Aged Brie" && Items[i].Name != "Backstage passes to a TAFKAL80ETC concert")
