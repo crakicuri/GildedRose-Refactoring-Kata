@@ -5,8 +5,8 @@ using System.Diagnostics;
 namespace GildedRoseKata;
 
 /// <summary>
-/// Ce script mets à jour les valeurs de qualité et du nombre de jours avant de vendre chaque Item.
-/// Pour chaque Item, on test plusieurs règles avant de lui assigner ses valeurs finals.
+/// Ce script met à jour les valeurs de qualité et le nombre de jours avant de vendre chaque Item.
+/// Pour chaque Item, on teste plusieurs règles avant de lui assigner ses valeurs finales.
 /// Le script est divisé en plusieurs fonctions qui peuvent s'adapter facilement à de nouvelles règles.
 /// </summary>
 public class GildedRose
@@ -18,7 +18,7 @@ public class GildedRose
         Items = p_items;
     }
 
-    // Fonction qui mets à jour la qualité de tout les articles
+    // Fonction qui met à jour la qualité de tous les articles.
     public void UpdateQuality()
     {
         foreach (Item item in Items)
@@ -27,7 +27,7 @@ public class GildedRose
         }
     }
 
-    // Fonction qui test les règles spécifiques avant la mise à jour
+    // Fonction qui teste les règles spécifiques avant la mise à jour.
     public void QualityRules(Item p_item)
     {
         if (p_item.Name == "Sulfuras, Hand of Ragnaros")
@@ -64,7 +64,7 @@ public class GildedRose
         ApplyChanges(p_item, 1, QMult);
     }
 
-    // Applique les changements en fonction des paramètres calculé par la fonction QualityRules
+    // Applique les changements en fonction des paramètres calculés par la fonction QualityRules.
     public void ApplyChanges(Item p_item, int p_SMultiplicator, int p_QMultiplicator)
     {
 
