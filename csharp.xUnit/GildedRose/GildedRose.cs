@@ -1,146 +1,80 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GildedRoseKata;
 
+/// <summary>
+/// Ce script mets à jour les valeurs de qualité et du nombre de jours avant de vendre chaque Item.
+/// Pour chaque Item, on test plusieurs règles avant de lui assigner ses valeurs finals.
+/// Le script est divisé en plusieurs fonctions qui peuvent s'adapter facilement à de nouvelles règles.
+/// </summary>
 public class GildedRose
 {
     IList<Item> Items;
 
-    public GildedRose(IList<Item> Items)
+    public GildedRose(IList<Item> p_items)
     {
-        this.Items = Items;
+        Items = p_items;
     }
 
+    // Fonction qui mets à jour la qualité de tout les articles
     public void UpdateQuality()
     {
-        foreach (Item item in this.Items)
+        foreach (Item item in Items)
         {
             QualityRules(item);
         }
     }
 
-    public void QualityRules(Item item)
+    // Fonction qui test les règles spécifiques avant la mise à jour
+    public void QualityRules(Item p_item)
     {
-        if (item.Name == "Sulfuras, Hand of Ragnaros")
+        if (p_item.Name == "Sulfuras, Hand of Ragnaros")
             return;
+        int QMult = p_item.Name == "Conjured Mana Cake" ? 2 : 1;
 
-        int SMult = 1;
-        int QMult = 1;
-
-        if (item.Name == "Conjured Mana Cake")
-            QMult = 2;
-
-        if (item.SellIn < 0)
+        if (p_item.SellIn <= 0)
             QMult *= 2;
 
-        if (item.Name == "Aged Brie")
-            QMult *= -1;
-
-        if (item.Name == "Backstage passes to a TAFKAL80ETC concert") 
+        // Règle pour le brie
+        if (p_item.Name == "Aged Brie")
         {
-            if (item.SellIn < 0)
-                QMult *= 0;
-            else
-            {
-                if (item.SellIn <= 5)
-                    QMult *= 3;
-                else if (item.SellIn <= 10)
-                    QMult *= 2;
-            }
+            QMult *= -1;
+            ApplyChanges(p_item, 1, QMult);
+            return;
         }
 
-        if (item.Quality == 0 || item.Quality > 50)
+        // Règles pour les places de concerts
+        if (p_item.Name == "Backstage passes to a TAFKAL80ETC concert") 
+        {
+            if (p_item.SellIn <= 0)
+                p_item.Quality = 0;
+            else if (p_item.SellIn <= 5)
+                QMult *= -3;
+            else if (p_item.SellIn <= 10)
+                QMult *= -2;
+            else
+                QMult *= -1;
+        }
+
+        if (p_item.Quality == 0 || p_item.Quality > 50)
             QMult *= 0;
 
-        ApplyChanges(item, SMult, QMult);
+        ApplyChanges(p_item, 1, QMult);
     }
 
-    public void ApplyChanges(Item item, int SMultiplicator, int QMultiplicator)
+    // Applique les changements en fonction des paramètres calculé par la fonction QualityRules
+    public void ApplyChanges(Item p_item, int p_SMultiplicator, int p_QMultiplicator)
     {
 
-        item.SellIn -= 1 * SMultiplicator;
-        item.Quality -= 1 * QMultiplicator;
+        p_item.SellIn -= 1 * p_SMultiplicator;
+        p_item.Quality -= 1 * p_QMultiplicator;
 
-        if (item.Quality < 0)
-            item.Quality = 0;
+        if (p_item.Quality < 0)
+            p_item.Quality = 0;
 
-        if (item.Quality > 50)
-            item.Quality = 50;
-    }
-
-    public void temp()
-    {
-        for (var i = 0; i < Items.Count; i++)
-        {
-            if (Items[i].Name != "Aged Brie" && Items[i].Name != "Backstage passes to a TAFKAL80ETC concert")
-            {
-                if (Items[i].Quality > 0)
-                {
-                    if (Items[i].Name != "Sulfuras, Hand of Ragnaros")
-                    {
-                        Items[i].Quality = Items[i].Quality - 1;
-                    }
-                }
-            }
-            else
-            {
-                if (Items[i].Quality < 50)
-                {
-                    Items[i].Quality = Items[i].Quality + 1;
-
-                    if (Items[i].Name == "Backstage passes to a TAFKAL80ETC concert")
-                    {
-                        if (Items[i].SellIn < 11)
-                        {
-                            if (Items[i].Quality < 50)
-                            {
-                                Items[i].Quality = Items[i].Quality + 1;
-                            }
-                        }
-
-                        if (Items[i].SellIn < 6)
-                        {
-                            if (Items[i].Quality < 50)
-                            {
-                                Items[i].Quality = Items[i].Quality + 1;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (Items[i].Name != "Sulfuras, Hand of Ragnaros")
-            {
-                Items[i].SellIn = Items[i].SellIn - 1;
-            }
-
-            if (Items[i].SellIn < 0)
-            {
-                if (Items[i].Name != "Aged Brie")
-                {
-                    if (Items[i].Name != "Backstage passes to a TAFKAL80ETC concert")
-                    {
-                        if (Items[i].Quality > 0)
-                        {
-                            if (Items[i].Name != "Sulfuras, Hand of Ragnaros")
-                            {
-                                Items[i].Quality = Items[i].Quality - 1;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Items[i].Quality = Items[i].Quality - Items[i].Quality;
-                    }
-                }
-                else
-                {
-                    if (Items[i].Quality < 50)
-                    {
-                        Items[i].Quality = Items[i].Quality + 1;
-                    }
-                }
-            }
-        }
+        if (p_item.Quality > 50)
+            p_item.Quality = 50;
     }
 }

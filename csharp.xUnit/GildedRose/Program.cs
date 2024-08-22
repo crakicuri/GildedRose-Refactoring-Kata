@@ -7,7 +7,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        Console.WriteLine("TEST MARTIN!");
+        Console.WriteLine("OMGHAI!");
 
         IList<Item> items = new List<Item>
         {
@@ -34,8 +34,8 @@ public class Program
                 SellIn = 5,
                 Quality = 49
             },
-
-            new Item {Name = "Conjured Mana Cake", SellIn = 3, Quality = 6}
+            // this conjured item does not work properly yet
+            new Item {Name = "Conjured Mana Cake", SellIn = 3}
         };
 
         var app = new GildedRose(items);
